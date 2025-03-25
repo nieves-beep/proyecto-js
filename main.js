@@ -112,3 +112,5 @@ function menuTienda() {
         }
     } while (opcion !== "3");
 }
+
+iniciarPrograma();
