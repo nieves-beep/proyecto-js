@@ -92,19 +92,23 @@ function menuTienda() {
     do {
         opcion = prompt(
             "Elige una opción:\n" +
-            "1. Buscar productos\n" +
-            "2. Agregar producto\n" +
-            "3. Salir"
+            "1. Iniciar sesion\n" +
+            "2. Buscar productos\n" +
+            "3. Agregar producto\n" +
+            "4. Salir"
         );
 
         switch (opcion) {
             case "1":
-                filtrarProductos();
+                iniciarSesion();
                 break;
             case "2":
-                agregarProducto();
+                filtrarProductos();
                 break;
             case "3":
+                agregarProducto();
+                break;
+            case "4":
                 alert("Gracias por visitar nuestra tienda de maquillaje.");
                 break;
             default:
@@ -113,4 +117,4 @@ function menuTienda() {
     } while (opcion !== "3");
 }
 
-iniciarPrograma();
+menuTienda();
