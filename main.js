@@ -1,120 +1,95 @@
-// DATOS //
-const usuarios = [
-    { usuario: "admin", contraseña: "1234" },
-    { usuario: "usuario1", contraseña: "abcd" },
-    { usuario: "usuario2", contraseña: "clave" }
-];
+document.addEventListener("DOMContentLoaded", function () {
+    // alerta de bienvenida
+    Swal.fire({
+        title: "¡Bienvenido a Doll Makeup Store! ❤️",
+        text: "Descubrí los mejores productos de maquillaje",
+        confirmButtonText: "¡Vamos!"
+    });
 
-const Producto = function(nombre, precio, stock) {
-    this.nombre = nombre;
-    this.precio = precio;
-    this.stock = stock;
-};
+    // eventos de botones
+    document.getElementById("btnIniciarSesion").addEventListener("click", iniciarSesion);
+    document.getElementById("btnMostrarProductos").addEventListener("click", mostrarProductos);
+    document.getElementById("btnAgregarProducto").addEventListener("click", agregarProducto);
+});
 
-const listaProductos = [
+class Producto {
+    constructor(nombre, precio, stock) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.stock = stock;
+    }
+}
+
+// carga de prod localstorage
+let listaProductos = JSON.parse(localStorage.getItem("productos")) || [
     new Producto("Labial", 10500, 20),
     new Producto("Base Líquida", 11000, 15),
     new Producto("Rímel Waterproof", 9500, 10),
     new Producto("Paleta de Sombras", 8000, 8)
 ];
 
-// FUNCIONES DE AUTENTICACION //
-
-function validarUsuario(usuario, contraseña) {
-    return usuarios.some(u => u.usuario === usuario && u.contraseña === contraseña);
-}
-
+// iniciar sesion
 function iniciarSesion() {
-    let intentos = 3;
-    while (intentos > 0) {
-        let usuario = prompt("Ingrese su usuario:");
-        let contraseña = prompt("Ingrese su contraseña:");
+    Swal.fire({
+        title: "Iniciar Sesión",
+        html:
+            '<input id="swal-input-usuario" class="swal2-input" placeholder="Usuario">' +
+            '<input id="swal-input-password" type="password" class="swal2-input" placeholder="Contraseña">',
+        confirmButtonText: "Ingresar",
+        showCancelButton: true,
+        preConfirm: () => {
+            const usuario = document.getElementById("swal-input-usuario").value;
+            const contraseña = document.getElementById("swal-input-password").value;
 
-        if (validarUsuario(usuario, contraseña)) {
-            alert("¡Ingresaste correctamente!");
-            menuTienda();
-            return;
-        } else {
-            intentos--;
-            alert(`Usuario o contraseña incorrectos. Intentos restantes: ${intentos}`);
+            if (usuarios.some(u => u.usuario === usuario && u.contraseña === contraseña)) {
+                Swal.fire("¡Bien!", "Inicio de sesión correcto", "success");
+            } else {
+                Swal.fire("Error", "Usuario o contraseña incorrectos", "error");
+            }
         }
-    }
-    alert("Agotaste tus intentos. Cuenta bloqueada.");
+    });
 }
 
-function iniciarPrograma() {
-    do {
-        let opcion = prompt("¿Queres iniciar sesión? (si/no)").toLowerCase();
-        if (opcion === "si") {
-            iniciarSesion();
-            break;
-        } else if (opcion === "no") {
-            alert("Nos vemos");
-            break;
-        } else {
-            alert("Opción no válida, intenta otra vez");
-        }
-    } while (true);
+// DOM
+function mostrarProductos() {
+    let container = document.getElementById("productosContainer");
+    container.innerHTML = "";
+
+    listaProductos.forEach(producto => {
+        let div = document.createElement("div");
+        div.innerHTML = `<p><strong>${producto.nombre}</strong> - $${producto.precio} - Stock: ${producto.stock}</p>`;
+        container.appendChild(div);
+    });
 }
 
-// FUNCIONES DE PRODUCTOS //
-
-function filtrarProductos() {
-    let palabraClave = prompt("Ingresa el producto que buscas").trim().toUpperCase();
-    let resultado = listaProductos.filter(x => x.nombre.toUpperCase().includes(palabraClave));
-
-    if (resultado.length > 0) {
-        console.table(resultado);
-    } else {
-        alert("No se encontraron coincidencias.");
-    }
-}
-
+// agregar un productop
 function agregarProducto() {
-    let nombre = prompt("Ingresa el nombre del producto").trim();
-    let precio = parseFloat(prompt("Ingresa el precio del producto"));
-    let stock = parseInt(prompt("Ingresa el stock del producto"));
+    Swal.fire({
+        title: "Agregar Producto",
+        html:
+            '<input id="swal-input-nombre" class="swal2-input" placeholder="Nombre del producto">' +
+            '<input id="swal-input-precio" type="number" class="swal2-input" placeholder="Precio">' +
+            '<input id="swal-input-stock" type="number" class="swal2-input" placeholder="Stock">',
+        confirmButtonText: "Agregar",
+        showCancelButton: true,
+        preConfirm: () => {
+            const nombre = document.getElementById("swal-input-nombre").value.trim();
+            const precio = parseFloat(document.getElementById("swal-input-precio").value);
+            const stock = parseInt(document.getElementById("swal-input-stock").value);
 
-    if (isNaN(precio) || isNaN(stock) || nombre === "") {
-        alert("Por favor ingresa datos válidos");
-        return;
-    }
+            if (!nombre || isNaN(precio) || isNaN(stock)) {
+                Swal.fire("Error", "Por favor, ingresa valores válidos", "error");
+                return;
+            }
 
-    let producto = new Producto(nombre, precio, stock);
-    listaProductos.push(producto);
-    console.table(listaProductos);
-}
+            let nuevoProducto = new Producto(nombre, precio, stock);
+            listaProductos.push(nuevoProducto);
+            localStorage.setItem("productos", JSON.stringify(listaProductos));
 
-// MENU DE LA TIENDA //
-
-function menuTienda() {
-    let opcion;
-    do {
-        opcion = prompt(
-            "Elige una opción:\n" +
-            "1. Iniciar sesion\n" +
-            "2. Buscar productos\n" +
-            "3. Agregar producto\n" +
-            "4. Salir"
-        );
-
-        switch (opcion) {
-            case "1":
-                iniciarSesion();
-                break;
-            case "2":
-                filtrarProductos();
-                break;
-            case "3":
-                agregarProducto();
-                break;
-            case "4":
-                alert("Gracias por visitar nuestra tienda de maquillaje.");
-                break;
-            default:
-                alert("Opción no válida, intenta de nuevo.");
+            Swal.fire("¡Éxito!", "Producto agregado correctamente", "success");
+            mostrarProductos(); // actualiza la lista de productos en el DOM
         }
-    } while (opcion !== "3");
+    });
 }
 
-menuTienda();
+
