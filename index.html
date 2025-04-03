@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda de Maquillaje</title>
+    <title>Doll Makeup Store</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-    <h1>Tienda de Maquillaje</h1>
-    <button id="btnIniciarSesion">Iniciar Sesión</button>
-    <button id="btnMostrarProductos">Ver Productos</button>
-    <button id="btnAgregarProducto">Agregar Producto</button>
-    <div id="productosContainer"></div>
-
+    <header>
+        <h1>Doll Makeup Store</h1>
+    </header>
+    
+    <main>
+        <section class="intro">
+            <h2>Bienvenido a nuestra tienda</h2>
+            <p>Descubrí los mejores productos de maquillaje</p>
+        </section>
+        
+        <section class="botones">
+            <button id="btnIniciarSesion" class="boton">Iniciar Sesión</button>
+            <button id="btnMostrarProductos" class="boton">Ver Productos</button>
+            <button id="btnAgregarProducto" class="boton">Agregar Producto</button>
+        </section>
+        
+        <section id="productosContainer" class="productos-container"></section>
+    </main>
+    
     <script src="main.js"></script>
 </body>
-
 </html>
-
